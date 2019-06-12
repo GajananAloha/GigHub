@@ -25,8 +25,8 @@ namespace GigHub.Models
         {
         }
 
-        public DbSet<Gig> Gig { get; set; }
-        public DbSet<Genre>  Genre { get; set; }
+        public DbSet<Gig> Gigs { get; set; }
+        public DbSet<Genre>  Genres { get; set; }
 
         public static ApplicationDbContext Create()
         {
