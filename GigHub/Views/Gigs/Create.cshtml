@@ -1,25 +1,26 @@
 ﻿@model GigHub.ViewModels.GigFormViewModel
 @{
-    ViewBag.Title = "Create";
+    ViewBag.Title = "Add Gig";
 }
 
 <h2>Create</h2>
 @using (Html.BeginForm("Create", "Gigs"))
 {
     @Html.AntiForgeryToken();
+    <p class="alert alert-info">All fields are <strong>Required</strong>.</p>
     <div class="form-group">
         @Html.LabelFor(m => m.Venue)
-        @Html.TextBoxFor(m => m.Venue, new { @class = "form-control" })
+        @Html.TextBoxFor(m => m.Venue, new { @class = "form-control", autofocus= "autofocus" })
         @Html.ValidationMessageFor(m=>m.Venue)
     </div>
     <div class="form-group">
         @Html.LabelFor(m => m.Date)
-        @Html.TextBoxFor(m => m.Date, new { @class = "form-control" })
+        @Html.TextBoxFor(m => m.Date, new { @class = "form-control", placeHolder="eg 1 Jan 2019" })
         @Html.ValidationMessageFor(m => m.Date)
     </div>
     <div class="form-group">
         @Html.LabelFor(m => m.Time)
-        @Html.TextBoxFor(m => m.Time, new { @class = "form-control" })
+        @Html.TextBoxFor(m => m.Time, new { @class = "form-control", placeHolder = "eg 20:00" })
         @Html.ValidationMessageFor(m => m.Time)
     </div>
     <div class="form-group">
