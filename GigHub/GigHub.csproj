@@ -228,6 +228,10 @@
     <Compile Include="Migrations\201906140607150_AddNameToUserTable.Designer.cs">
       <DependentUpon>201906140607150_AddNameToUserTable.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201906150223269_changedTypeOfGenreId.cs" />
+    <Compile Include="Migrations\201906150223269_changedTypeOfGenreId.Designer.cs">
+      <DependentUpon>201906150223269_changedTypeOfGenreId.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Genre.cs" />
@@ -329,6 +333,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201906140607150_AddNameToUserTable.resx">
       <DependentUpon>201906140607150_AddNameToUserTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201906150223269_changedTypeOfGenreId.resx">
+      <DependentUpon>201906150223269_changedTypeOfGenreId.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
