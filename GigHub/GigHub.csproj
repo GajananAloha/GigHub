@@ -224,6 +224,10 @@
     <Compile Include="Migrations\201906130244213_addForiegnKeyToGig.Designer.cs">
       <DependentUpon>201906130244213_addForiegnKeyToGig.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201906140607150_AddNameToUserTable.cs" />
+    <Compile Include="Migrations\201906140607150_AddNameToUserTable.Designer.cs">
+      <DependentUpon>201906140607150_AddNameToUserTable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Genre.cs" />
@@ -322,6 +326,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201906130244213_addForiegnKeyToGig.resx">
       <DependentUpon>201906130244213_addForiegnKeyToGig.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201906140607150_AddNameToUserTable.resx">
+      <DependentUpon>201906140607150_AddNameToUserTable.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
