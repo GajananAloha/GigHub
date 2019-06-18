@@ -1,0 +1,15 @@
+﻿@model GigHub.ViewModels.FolloweeViewModel
+
+    @{
+        ViewBag.Title = "Following";
+    }
+
+    <ul>
+        @foreach (var artist in Model.Artists)
+        {
+            <li>
+                @artist
+            </li>
+        }
+
+    </ul>

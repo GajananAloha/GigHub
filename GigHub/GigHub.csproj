@@ -211,11 +211,14 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
-    <Compile Include="Controllers\AttendancesController.cs" />
+    <Compile Include="Controllers\API\GigsController.cs" />
+    <Compile Include="Controllers\API\AttendancesController.cs" />
+    <Compile Include="Controllers\API\FollowersController.cs" />
     <Compile Include="Controllers\GigsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Dtos\AttendanceDto.cs" />
+    <Compile Include="Dtos\FollowDto.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -251,17 +254,40 @@
     <Compile Include="Migrations\201906151000006_AddAttendanceTable.Designer.cs">
       <DependentUpon>201906151000006_AddAttendanceTable.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201906151257396_AddFollowsTable.cs" />
+    <Compile Include="Migrations\201906151257396_AddFollowsTable.Designer.cs">
+      <DependentUpon>201906151257396_AddFollowsTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201906151339268_revertFollow.cs" />
+    <Compile Include="Migrations\201906151339268_revertFollow.Designer.cs">
+      <DependentUpon>201906151339268_revertFollow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201906151341321_AddFollowTableWithKey.cs" />
+    <Compile Include="Migrations\201906151341321_AddFollowTableWithKey.Designer.cs">
+      <DependentUpon>201906151341321_AddFollowTableWithKey.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201906170149519_ModifyCloumnNameInFollowTable.cs" />
+    <Compile Include="Migrations\201906170149519_ModifyCloumnNameInFollowTable.Designer.cs">
+      <DependentUpon>201906170149519_ModifyCloumnNameInFollowTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201906170634550_AddIsCanceledToGig.cs" />
+    <Compile Include="Migrations\201906170634550_AddIsCanceledToGig.Designer.cs">
+      <DependentUpon>201906170634550_AddIsCanceledToGig.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Attendance.cs" />
+    <Compile Include="Models\Follower.cs" />
     <Compile Include="Models\Genre.cs" />
     <Compile Include="Models\Gig.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="ViewModels\FolloweeViewModel.cs" />
     <Compile Include="ViewModels\FutureDate.cs" />
     <Compile Include="ViewModels\GigFormViewModel.cs" />
+    <Compile Include="ViewModels\HomeViewModel.cs" />
     <Compile Include="ViewModels\ValidTime.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -271,6 +297,7 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Scripts\bootbox.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="ApplicationInsights.config">
@@ -299,9 +326,9 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Home\About.cshtml" />
-    <Content Include="Views\Home\Contact.cshtml" />
-    <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Migrations\Home\About.cshtml" />
+    <Content Include="Migrations\Home\Contact.cshtml" />
+    <Content Include="Views\Shared\Gigs.cshtml" />
     <Content Include="Views\Account\_ExternalLoginsListPartial.cshtml" />
     <Content Include="Views\Account\ConfirmEmail.cshtml" />
     <Content Include="Views\Account\ExternalLoginConfirmation.cshtml" />
@@ -322,7 +349,9 @@
     <Content Include="Views\Manage\VerifyPhoneNumber.cshtml" />
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
-    <Content Include="Views\Gigs\Create.cshtml" />
+    <Content Include="Views\Gigs\GigForm.cshtml" />
+    <Content Include="Views\Gigs\Following.cshtml" />
+    <Content Include="Views\Gigs\Mine.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -359,6 +388,21 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201906151000006_AddAttendanceTable.resx">
       <DependentUpon>201906151000006_AddAttendanceTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201906151257396_AddFollowsTable.resx">
+      <DependentUpon>201906151257396_AddFollowsTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201906151339268_revertFollow.resx">
+      <DependentUpon>201906151339268_revertFollow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201906151341321_AddFollowTableWithKey.resx">
+      <DependentUpon>201906151341321_AddFollowTableWithKey.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201906170149519_ModifyCloumnNameInFollowTable.resx">
+      <DependentUpon>201906170149519_ModifyCloumnNameInFollowTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201906170634550_AddIsCanceledToGig.resx">
+      <DependentUpon>201906170634550_AddIsCanceledToGig.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
