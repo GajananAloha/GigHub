@@ -45,6 +45,15 @@ body {
         color: #ffffff;
     }
 
+    .navbar-inverse .notification {
+        position: relative;
+    }
+        .navbar-inverse .notification .badge {
+        position: absolute;
+        top:8px;
+        right:0;
+        background:#a80a0a;
+    }
 .dropdown-menu {
     box-shadow: none;
 }
@@ -93,6 +102,8 @@ h6,
 .navbar-brand {
     font-weight: 700;
 }
+
+
 /*Page level*/
 .gigs {
     list-style: none;

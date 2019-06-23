@@ -48,7 +48,7 @@
         $(document).ready(function () {
             $(".js-toggle-attendance").click(function (e) {
                 var btn = $(e.target);
-                $.post("/api/attendances", { "GigId": btn.attr("data-gig-id") })
+                $.post("/gighub/api/attendances", { "GigId": btn.attr("data-gig-id") })
                 .done(function () {
                     btn.removeClass("btn-default").addClass("btn-info").text("Going");
                 })
@@ -59,7 +59,7 @@
 
             $(".js-toggle-follow").click(function (e) {
                 var btn = $(e.target);
-                $.post("/api/followers", { "ArtistId": btn.attr("data-artist-id") })
+                $.post("/gighub/api/followers", { "ArtistId": btn.attr("data-artist-id") })
                 .done(function () {
                     btn.removeClass("btn-default").addClass("btn-info").text("Following");
                 })

@@ -89,10 +89,16 @@ namespace GigHub.Controllers
                 return View("GigForm", viewModel);
             }
             var userId = User.Identity.GetUserId();
-            var gig = _context.Gigs.Single(g => g.Id == viewModel.Id && g.ArtistId == userId);
+            var gig = _context.Gigs
+                .Include(g => g.Attendances.Select(a => a.Attendee))
+                .SingleOrDefault(g => g.Id == viewModel.Id && g.ArtistId == userId);
+
+            gig.Update();
+
             gig.Venue = viewModel.Venue;
             gig.GenreId = viewModel.Genre;
             gig.DateTime = viewModel.GetDateTime();
+
             _context.SaveChanges();
             return RedirectToAction("Mine");
         }

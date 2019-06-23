@@ -54,7 +54,7 @@
                             callback: function () {
                                 var link = $(e.target);
                                 $.ajax({
-                                    url: "/api/gigs/" + link.attr("data-gig-id"),
+                                    url: "/gighub/api/gigs/" + link.attr("data-gig-id"),
                                     method: "DELETE"
                                 })
                                 .done(function () {
