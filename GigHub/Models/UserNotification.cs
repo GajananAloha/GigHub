@@ -18,6 +18,10 @@ namespace GigHub.Models
         public ApplicationUser User { get; set; }
         public bool IsRead { get; set; }
 
+        public UserNotification()
+        {
+
+        }
         public UserNotification(ApplicationUser user, Notification notification)
         {
             if (user == null || notification == null)
@@ -26,5 +30,9 @@ namespace GigHub.Models
             Notification = notification;
         }
 
+        public void Read()
+        {
+            IsRead = true;
+        }
     }
 }

@@ -48,13 +48,19 @@ body {
     .navbar-inverse .notification {
         position: relative;
     }
+
         .navbar-inverse .notification .badge {
-        position: absolute;
-        top:8px;
-        right:0;
-        background:#a80a0a;
-    }
+            position: absolute;
+            top: 8px;
+            right: 0;
+            background: #a80a0a;
+        }
+
 .dropdown-menu {
+    box-shadow: none;
+}
+
+.popover {
     box-shadow: none;
 }
 
@@ -183,3 +189,29 @@ h6,
 .gigs > li:hover .actions {
     display: block;
 }
+
+.popover-notifications .popover-content {
+    padding: 0;
+}
+
+ul.notifications {
+    list-style: none;
+    padding: 0;
+}
+
+    ul.notifications > li {
+        border-bottom: 1px solid #ddd;
+        padding: 10px;
+    }
+
+        ul.notifications > li:last-child {
+            border-bottom: none;
+        }
+
+.popover-notifications {
+    padding: 0;
+}
+
+    .popover-notifications ul.notifications .highlight {
+        font-weight: bold;
+    }

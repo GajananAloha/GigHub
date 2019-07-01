@@ -1,4 +1,5 @@
 ﻿using GigHub.Models;
+using GigHub.Repositories;
 using GigHub.ViewModels;
 using Microsoft.AspNet.Identity;
 using System;
@@ -13,10 +14,16 @@ namespace GigHub.Controllers
     {
         // GET: Gigs
         private ApplicationDbContext _context;
+        private readonly GigRepository _gigsRepository;
+        private readonly AttendanceRepository _attendanceRepository;
+        private readonly GenreRepository _genreRepository;
 
-            public GigsController()
+        public GigsController()
         {
             _context = new ApplicationDbContext();
+            _gigsRepository = new GigRepository(_context);
+            _attendanceRepository = new AttendanceRepository(_context);
+            _genreRepository = new GenreRepository(_context);
         }
 
         [Authorize]
@@ -27,27 +34,29 @@ namespace GigHub.Controllers
                 Genres = _context.Genres.ToList(),
                 Heading = "Create Gig"
             };
-            return View("GigForm",ViewModel);
+            return View("GigForm", ViewModel);
         }
 
         [Authorize]
         public ActionResult Edit(int id)
         {
-            var userId = User.Identity.GetUserId();
-            var gig = _context.Gigs.Single(g => g.Id == id
-            && g.ArtistId == userId
-            && g.DateTime > DateTime.Now);
+            var gig = _gigsRepository.GetGig(id);
+            if (gig.ArtistId != User.Identity.GetUserId())
+                return new HttpUnauthorizedResult();
+            if (gig.DateTime < DateTime.Now)
+                return null;
+
             var ViewModel = new GigFormViewModel
             {
                 Venue = gig.Venue,
                 Date = gig.DateTime.ToString("d MMM yyyy"),
-                Time=gig.DateTime.ToString("HH:mm"),
-                Genres = _context.Genres.ToList(),
+                Time = gig.DateTime.ToString("HH:mm"),
+                Genres = _genreRepository.GetAllGenre(),
                 Genre = gig.GenreId,
-                Heading="Edit Gig",
+                Heading = "Edit Gig",
                 Id = gig.Id
             };
-            return View("GigForm",ViewModel);
+            return View("GigForm", ViewModel);
         }
 
         [Authorize]
@@ -59,7 +68,7 @@ namespace GigHub.Controllers
             {
                 viewModel = new GigFormViewModel
                 {
-                    Genres = _context.Genres.ToList()
+                    Genres = _genreRepository.GetAllGenre()
                 };
                 return View("GigForm", viewModel);
             }
@@ -84,14 +93,16 @@ namespace GigHub.Controllers
             {
                 viewModel = new GigFormViewModel
                 {
-                    Genres = _context.Genres.ToList()
+                    Genres = _genreRepository.GetAllGenre()
                 };
                 return View("GigForm", viewModel);
             }
-            var userId = User.Identity.GetUserId();
-            var gig = _context.Gigs
-                .Include(g => g.Attendances.Select(a => a.Attendee))
-                .SingleOrDefault(g => g.Id == viewModel.Id && g.ArtistId == userId);
+
+            var gig = _gigsRepository.GigWithAttednace(viewModel.Id);
+            if (gig == null)
+                return HttpNotFound();
+            if (gig.ArtistId != User.Identity.GetUserId())
+                return new HttpUnauthorizedResult();
 
             gig.Update();
 
@@ -107,18 +118,15 @@ namespace GigHub.Controllers
         public ActionResult Attending()
         {
             var attendee = User.Identity.GetUserId();
-            var gigs = _context.Attendances
-                .Where(a => a.AttendeeId == attendee)
-                .Select(a => a.Gig)
-                .Include(g=>g.Artist)
-                .Include(g => g.Genre);
             var viewModel = new GigsViewModel()
             {
-                UpcomingGigs = gigs,
+                UpcomingGigs = _gigsRepository.GetGigsUserAttending(attendee),
                 ShowActions = User.Identity.IsAuthenticated,
-                Heading = "Gigs I'm Attending"
+                Heading = "Gigs I'm Attending",
+                Attendances = _attendanceRepository.GetFutureAttendances(attendee)
+                .ToLookup(a => a.GigId)
             };
-            return View("Gigs",viewModel);
+            return View("Gigs", viewModel);
         }
 
         [Authorize]
@@ -126,8 +134,8 @@ namespace GigHub.Controllers
         {
             var follower = User.Identity.GetUserId();
             var artistList = _context.Follows
-                .Where(a => a.FollowerId ==follower )
-                .Select(f=>f.Artist.Name).ToList();
+                .Where(a => a.FollowerId == follower)
+                .Select(f => f.Artist.Name).ToList();
             var viewModel = new FolloweeViewModel()
             {
                 Artists = artistList
@@ -140,9 +148,32 @@ namespace GigHub.Controllers
         {
             var artistId = User.Identity.GetUserId();
             var gigs = _context.Gigs
-                .Include(g=>g.Genre)
+                .Include(g => g.Genre)
                 .Where(g => g.ArtistId == artistId && !g.IsCanceled);
             return View(gigs);
+        }
+
+        public ActionResult Search(GigsViewModel vwModel)
+        {
+            return RedirectToAction("Index", "Home", new { query = vwModel.SearchTerm });
+        }
+
+        public ActionResult Details(int id)
+        {
+            var gig = _gigsRepository.GetGigWithGenreAndArtist(id);
+            if (gig == null)
+                return HttpNotFound();
+            var viewModel = new GigDetailsViewModel
+            {
+                Gig = gig
+            };
+            if (User.Identity.IsAuthenticated)
+            {
+                var userId = User.Identity.GetUserId();
+                viewModel.IsAttending = _context.Attendances.Any(a => a.GigId == id && a.AttendeeId == userId);
+                viewModel.IsFollowing = _context.Follows.Any(a => a.ArtistId == gig.ArtistId && a.FollowerId == userId);
+            }
+            return View("Details", viewModel);
         }
     }
 }

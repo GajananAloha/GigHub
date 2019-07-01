@@ -7,6 +7,38 @@
     <link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet">
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
+    <script type="text/x-template" id="notifications-templete">
+        <ul class="notifications">
+            <%
+            _.each(notifications, function(notification){
+            if(notification.type == 1){%>
+            <li>
+                <span class="highlight"><%=notification.gig.artist.name %> </span> has Canceled Gig at <%=notification.gig.venue%> at <%=notification.gig.dateTime%>
+            </li>
+            <% }
+            if(notification.type == 2) {
+            var changes =[],
+            orignalValues=[],
+            newValues = [];
+            if(notification.Venue != notification.gig.Venue) {
+            changes.push("venue")
+            orignalValues.push(notification.venue);
+            newValues.push(notification.gig.venue);
+            }
+            if(notification.orignalDateTime != notification.gig.dateTime) {
+            changes.push("date/time");
+            orignalValues.push(notification.orignalDateTime);
+            newValues.push(notification.gig.dateTime);
+            }%>
+            <li>
+                <span class="highlight"><%=notification.gig.artist.name %> </span> has changed the <%=changes.join(' and ')%> of the gig from <%=orignalValues.join('/')%> to <%=newValues.join('/')%>
+            </li>
+            <%}
+            
+            })
+            %>
+        </ul>
+    </script>
 
 </head>
 <body>
@@ -38,21 +70,32 @@
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/app")
     @RenderSection("scripts", required: false)
     <script>
         $(document).ready( function(){
             $.getJSON("api/notifications", function (notifications) {
+
+                if (notifications.length == 0)
+                    return;
                 $(".js-notifications-count").text(notifications.length).removeClass("hide");
-                alert(JSON.stringify(notifications));
+                $(".notification").popover({
+                    html: true,
+                    title: "Notifications",
+                    content: function () {
+                        var compiled = _.template($("#notifications-templete").html())
+                        return compiled({notifications:notifications});
+                    },
+                    placement: "bottom",
+                    template: '<div class="popover popover-notifications" role="tooltip"><div class="arrow"></div><h3 class="popover-title"></h3><div class="popover-content"></div></div>'
+                }).on("shown.bs.popover", function () {
+                    $.post("/GigHub/api/notifications/markAsRead")
+                    .done(function () {
+                        $(".js-notifications-count").text("").addClass("hide");
+                    })
+                });
             });
-            $(".notification").popover({
-                html: true,
-                title: "Notification",
-                content: function () {
-                    return "Hello World";
-                },
-                placement: "bottom"
-            });
+            
         })
     </script>
 </body>

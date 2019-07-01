@@ -3,6 +3,18 @@
     ViewBag.Title = "Home Page";
 }
 <h1>@Model.Heading</h1>
+@using (Html.BeginForm("Search", "Gigs"))
+{
+    <div class="form-group">
+        <div class="input-group" style="width:300px">
+            @Html.TextBoxFor(m => m.SearchTerm, new { @class = "form-control" })
+            <span class="input-group-addon">
+                <i class="glyphicon glyphicon-search"></i>
+            </span>
+        </div>
+        
+    </div>
+}
 <ul class="gigs voffset3">
     @foreach (var gig in Model.UpcomingGigs)
     {
@@ -17,7 +29,9 @@
             </div>
             <div class="details">
                 <span class="artist">
-                    @gig.Artist.Name
+                    <a href="@Url.Action("Details", "Gigs", new { id = gig.Id })">
+                        @gig.Artist.Name
+                    </a>
 
                     @if (gig.IsCanceled)
                     {
@@ -36,7 +50,7 @@
                 </span>
                 @if (Model.ShowActions && !gig.IsCanceled)
                 {
-                    <button data-gig-id="@gig.Id" class="btn btn-default btn-sm pull-right js-toggle-attendance">Going?</button>
+                    <button data-gig-id="@gig.Id" class="btn @(Model.Attendances.Contains(gig.Id)?"btn-info":"btn-default") btn-sm pull-right js-toggle-attendance">Going?</button>
                 }
             </div>
         </li>
@@ -46,17 +60,7 @@
 {
     <script>
         $(document).ready(function () {
-            $(".js-toggle-attendance").click(function (e) {
-                var btn = $(e.target);
-                $.post("/gighub/api/attendances", { "GigId": btn.attr("data-gig-id") })
-                .done(function () {
-                    btn.removeClass("btn-default").addClass("btn-info").text("Going");
-                })
-                .fail(function () {
-                    alert("Something Went Wrong");
-                })
-            });
-
+            initGigs();
             $(".js-toggle-follow").click(function (e) {
                 var btn = $(e.target);
                 $.post("/gighub/api/followers", { "ArtistId": btn.attr("data-artist-id") })
