@@ -28,17 +28,29 @@ namespace GigHub.Repositories
                 .Include(g => g.Attendances.Select(a => a.Attendee))
                 .SingleOrDefault(g => g.Id == gigId);
         }
-        public Gig GetGig(int gigId)
-        {
-            return _context.Gigs.SingleOrDefault(g => g.Id == gigId);
-        }
+        //public Gig GetGig(int gigId)
+        //{
+        //    return _context.Gigs.SingleOrDefault(g => g.Id == gigId);
+        //}
 
-        public Gig GetGigWithGenreAndArtist(int gigId)
+        public Gig GetGig(int gigId)
         {
             return _context.Gigs
                 .Include(g => g.Artist)
                 .Include(g => g.Genre)
                 .SingleOrDefault(g => g.Id == gigId);
+        }
+
+        public IEnumerable<Gig> GetUpcomingGigsByArtist(string artistId)
+        {
+            return _context.Gigs
+                .Include(g => g.Genre)
+                .Where(g => g.ArtistId == artistId && !g.IsCanceled).ToList();
+        }
+
+        public void Add(Gig gig)
+        {
+            _context.Gigs.Add(gig);
         }
     }
 }
